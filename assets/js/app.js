@@ -21,7 +21,7 @@
   // Define the chart's margins as an object
   var margin = {
     top: 50,
-    right: 120,
+    right: 200,
     bottom: 100,
     left: 50
   };
@@ -32,7 +32,7 @@
 
   // Select body, append SVG area to it, and set its dimensions
   // Create an SVG wrapper, append an SVG group that will hold our chart, and shift the latter by left and top margins.
-  var svg = d3.select("#scatter")
+  var svg = d3.select(".scatter")
     .append("svg")
     .attr("width", svgWidth)
     .attr("height", svgHeight);
@@ -58,7 +58,7 @@
     // Step 2: Create scale functions
     // ==============================
     var xLinearScale = d3.scaleLinear()
-      .domain([8, d3.max(healthData, d => d.poverty)])
+      .domain(d3.extent(healthData, d => d.poverty))
       .range([0, width]).nice();
 
     var yLinearScale = d3.scaleLinear()
@@ -83,8 +83,7 @@
     // Step 6: Create circles & Initialize tool tip
     // ==============================
     var toolTip = d3.tip()
-    .attr("class", "tooltip")
-    .offset([80, -60])
+    .attr("class", "d3-tip")
     .html(function(d) {
       return (`${d.state}<br>In Poverty %: ${d.poverty}<br>Lacks Healthcare %: ${d.healthcare}`);
     });
@@ -100,7 +99,7 @@
       .attr("cx", (d, i) => xLinearScale(d.poverty, labels[i]))
       .attr("cy", d => yLinearScale(d.healthcare))
       .attr("r", "10")
-      .attr("fill", "lightblue")
+      .attr("class", "stateCircle")
       .attr("opacity", "90") 
      
 
@@ -114,12 +113,18 @@
     
     // onmousever event
       .on("mouseover", function (d) {
+        d3.select(this)
+          .attr("style", "outline: solid black;")
+          .attr("class", "active")   
         toolTip.show(d, this);
       })
         
    // onmouseout event
    .on("mouseout", function(data, index) {
-    toolTip.hide(data);
+      d3.select(this)
+          .attr("style", "outline: none;") 
+          .attr("class", "inactive")    
+      toolTip.hide(data);
   })
 
     // Step 7: Create tooltip in the chart
@@ -141,7 +146,8 @@
       .attr("text-anchor", "middle")
       .attr("class", "axisText")
       .text("In Poverty (%)");
-  }).catch(function(error) {
+  
+    }).catch(function(error) {
     console.log(error);
   });
  }
@@ -150,4 +156,4 @@
  makeResponsive();
 
 // When the browser window is resized, makeResponsive() is called.
- d3.select(window).on("resize.updatesvg", makeResponsive);
+ d3.select(window).on("resize", makeResponsive);

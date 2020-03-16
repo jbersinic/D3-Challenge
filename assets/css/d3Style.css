@@ -13,7 +13,7 @@
 
 .inactive {
   font-weight: lighter;
-  fill: #c9c9c9;
+  fill: #fff;
   transition: fill 0.3s ease-out;
   text-anchor: middle;
 }
@@ -49,10 +49,13 @@
   text-align: center;
   text-transform: capitalize;
   background: rgba(0, 0, 0, 0.8);
-  border-radius: 4px;
+  border-radius: 10px;
 }
 
 /* Mobile Rules */
+
+
+
 
 @media screen and (max-width: 940px) {
   /* .stateText {
